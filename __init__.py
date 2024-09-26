@@ -2,16 +2,28 @@ import importlib.util
 import glob
 import os
 import sys
-import __main__
 import filecmp
 import shutil
+import inspect
+
+from server import PromptServer
 
 NODE_CLASS_MAPPINGS = {}
 NODE_DISPLAY_NAME_MAPPINGS = {}
 
+def get_comfy_dir(subpath=None, mkdir=False):
+    dir = os.path.dirname(inspect.getfile(PromptServer))
+    if subpath is not None:
+        dir = os.path.join(dir, subpath)
+
+    dir = os.path.abspath(dir)
+
+    if mkdir and not os.path.exists(dir):
+        os.makedirs(dir)
+    return dir
+
 python = sys.executable
-extentions_folder = os.path.join(os.path.dirname(os.path.realpath(__main__.__file__)),
-                                 "web" + os.sep + "extensions" + os.sep + "dzNodes")
+extentions_folder = get_comfy_dir("web" + os.sep + "extensions" + os.sep + "dzNodes")
 javascript_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), "js")
 outdate_file_list = ['comfy_shared.js', 'debug.js', 'mtb_widgets.js', 'parse-css.js', 'dz_widgets.js']
 
